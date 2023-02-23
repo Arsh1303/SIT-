@@ -1,0 +1,46 @@
+const int sensorPin1 = 2; 
+const int sensorPin2 = 3; 
+const int ledPin = 13;
+
+bool sensor1Flag = false;
+bool sensor2Flag = false;
+bool systemStatus = false;
+
+void setup() {
+  pinMode(sensorPin1, INPUT);
+  pinMode(sensorPin2, INPUT);
+
+  pinMode(ledPin, OUTPUT);
+
+  Serial.begin(9600);
+
+  attachInterrupt(digitalPinToInterrupt(sensorPin1), sensor1Interrupt, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(sensorPin2), sensor2Interrupt, CHANGE);
+}
+
+void loop() {
+  Serial.print("Sensor 1 flag: ");
+  Serial.println(sensor1Flag);
+  Serial.print("Sensor 2 flag: ");
+  Serial.println(sensor2Flag);
+
+  if (sensor1Flag || sensor2Flag) {
+    systemStatus = true;
+  } else {
+    systemStatus = false;
+  }
+
+  if (systemStatus) {
+    digitalWrite(ledPin, HIGH);
+  } else {
+    digitalWrite(ledPin, LOW);
+  }
+}
+
+void sensor1Interrupt() {
+  sensor1Flag = true;
+}
+
+void sensor2Interrupt() {
+  sensor2Flag = true;
+}
